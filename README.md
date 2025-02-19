@@ -1,6 +1,6 @@
 # 🎟️ E-Ticket System
 
-> **A Laravel & Nuxt-based ticketing system for school events**
+> **A Laravel-based ticketing system for school events**
 
 ---
 
@@ -24,16 +24,24 @@
 ### 🤨 Why are you using a template?
 <i style="color: green;">Bro, I'm not about to waste my life writing CSS from scratch. Do you want the site to look good or not? Plus, time is money, and I'm already broke. Deal with it.</i>
 
+### 🤨 Why not use React, Vue, or whatever JavaScript framework?
+<i style="color: blue;">Because I like my sanity intact. Laravel is enough. Backend + Frontend in one place, no npm run dev nonsense. Simple life.</i>
+
+### 🤨 Why are you using QR codes from simplesoftware.io?
+<i style="color: purple;">Because it works, and I don't wanna reinvent the wheel. Ain't nobody got time for that.</i>
+
+### 🤨 Why not make this a SaaS product and make money?
+<i style="color: orange;">Because I'm too lazy to deal with customer support. Also, I value my sleep.</i>
+
 ---
 
 ## 🔧 Tech Stack
 
-- **Backend:** Laravel 10
-- **Frontend:** Nuxt.js
+- **Backend & Frontend:** Laravel 10 (yes, full stack Laravel, deal with it)
 - **Database:** MySQL
 - **Authentication:** Sanctum
-- **UI Components:** TailwindCSS
-- **Charting:** ApexCharts
+- **UI Components:** Bootstrap 5
+- **QR Code Generation:** SimpleSoftware.io QR Code
 
 ---
 
@@ -41,22 +49,20 @@
 
 1. Clone this repo
    ```bash
-   git clone https://github.com/yourrepo/e-ticket.git
+   [git clone https://github.com/yourrepo/e-ticket.git](https://github.com/Lostky01/evToenTickets)
    ```
 2. Install dependencies
    ```bash
-   cd backend && composer install
-   cd frontend && npm install
+   composer install
    ```
 3. Configure `.env` file
 4. Run migrations
    ```bash
    php artisan migrate --seed
    ```
-5. Start the servers
+5. Start the server
    ```bash
    php artisan serve
-   npm run dev
    ```
 
 ---
@@ -82,5 +88,5 @@
 ## 🤝 Contact
 
 Wanna roast my code or contribute? Hit me up:
-📧 Email: your.email@example.com
-📌 GitHub: [YourGitHub](https://github.com/yourrepo)
+📧 Email: vndrdcan@gmail.com
+📌 GitHub: [Lostky01](https://github.com/Lostky01/evToenTickets)
