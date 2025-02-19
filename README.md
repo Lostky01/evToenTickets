@@ -18,6 +18,9 @@
 
 ## ❓ Q&A
 
+### 🤨 Why did you make this website?
+<i style="color: cyan;">Please mind reading the about first.</i>
+
 ### 🤨 Why are you still using PHP?
 <i style="color: red;"> PHP gets the job done. Plus, I'm transitioning to electrical engineering soon. Web development? Nuh uh, not my problem anymore.</i>
 
@@ -25,13 +28,13 @@
 <i style="color: green;">Hell no, I'm not wasting my time crafting CSS from scratch. You want a pretty site or a hot mess? Time's ticking, and I'm not getting paid for this. Deal with it.</i>
 
 ### 🤨 Why not use React, Vue, or whatever JavaScript framework?
-<i style="color: blue;">Bro, I cherish my sanity. Laravel does it all—backend and frontend in one neat package. No npm install headaches. Simple life, happy life.</i>
+<i style="color: blue;">Bro, I cherish my sanity. Laravel does it all—backend and frontend in one neat package. No npm install run dev bullcrap. Simple life, happy life.</i>
 
 ### 🤨 Why are you using QR codes from simplesoftware.io?
 <i style="color: purple;">Duh, because it freaking works. I'm not here to reinvent the wheel. Efficiency is key, my dude.</i>
 
 ### 🤨 Why not make this a SaaS product and make money?
-<i style="color: orange;">Hell nah! I'm too lazy to handle customer complaints. Plus, I love my sleep more than money. Priorities, bruh.</i>
+<i style="color: orange;">Hell nah I'm too lazy to handle customer complaints. Plus, I love my sleep more than money. Priorities, bruh.</i>
 
 ### 🤨 Why is the code full of comments?
 <i style="color: teal;">What the hell do you mean? Comments are there so you don't mess things up when you touch my code. Read them, or don't. Your funeral.</i>
@@ -52,7 +55,8 @@
 <i style="color: gold;">Because it doesn't need to be complicated. Do you want a ticket system or a full-blown enterprise solution? Keep it simple, stupid.</i>
 
 ### 🤨 Why didn't you use Tailwind CSS?
-<i style="color: cyan;">Bruh, I ain't got time to learn another CSS framework. Bootstrap does what I need. End of discussion.</i>
+<i style="color: cyan;">Bruh, I ain't got time to learn another CSS framework. Bootstrap does what I need, Plus the deadline is in the end of the month i guess. End of discussion.</i>
+
 
 ---
 
