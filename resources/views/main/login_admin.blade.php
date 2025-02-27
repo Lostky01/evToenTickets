@@ -12,7 +12,7 @@
 
     <style>
         body {
-            background-color: #EFF2F5;
+            background-image: radial-gradient(#182A4E, #0F111D);
             font-family: 'Mona-Sans', sans-serif !important;
         }
     </style>
@@ -21,14 +21,9 @@
 <body>
     <section class="main">
         <div class="container mt-5">
-            <center><img src="{{ asset('images/logo-header.png') }}" alt="" style="width: auto" height="90">
+            <center><img src="{{ asset('images/logo-white.png') }}" alt="" style="width: auto" height="70">
             </center>
             <div class="row justify-content-center mt-5 m-0 p-0">
-                <div class="col-md-4 p-0">
-                    <div class="bg-primary h-100 rounded-0" {{-- background-image: linear-gradient(#29366D, #3A53BE); --}}
-                        style="border-radius: 10px !important; background-image: url({{ asset('images/loginbg.png') }}); background-repeat: no-repeat;">
-                    </div>
-                </div>
                 <div class="col-md-4 p-0">
                     <div class="card shadow p-4">
                         <div class="card-body">
@@ -74,6 +69,17 @@
                                     disini</a></p>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="container" style="margin-top:10%">
+                <center><span style="color: #7D829B">Evtoen ©
+                        <script>document.write(new Date().getFullYear())</script>. All copyrights belong to 3R gen 19
+                    </span></center>
+                <div class="col-12 mt-3 d-flex justify-content-center mx-auto">
+                        <a class="mx-2" href=""><img src="{{ asset('images/ig_white.png') }}" alt=""></a>
+                        <a class="mx-2" href=""><img src="{{ asset('images/x_white.png') }}" alt=""></a>
+                        <a class="mx-2" href=""><img src="{{ asset('images/tiktok_white.png') }}" alt=""></a>
+                        <a class="mx-2" href=""><img src="{{ asset('images/youtube_white.png') }}" alt=""></a>
                 </div>
             </div>
         </div>

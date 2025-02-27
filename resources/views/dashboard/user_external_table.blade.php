@@ -37,7 +37,7 @@
                                             <td>{{ $item->password }}</td>
                                             <td>{{ $item->user_type }}</td>
                                             <td>
-                                                <a href="{{ route('edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                                <a href="{{ route('edit', $item->id) }}" class="btn btn-warning btn-sm">Lihat</a>
                                                 <form action="{{ route('destroy', $item->id) }}" method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')

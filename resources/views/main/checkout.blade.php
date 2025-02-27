@@ -3,6 +3,7 @@
     Checkout
 @endsection
 @section('style')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dropify/dist/css/dropify.min.css" />
     <style>
         body {
             background-color: #EFF2F5;
@@ -29,7 +30,8 @@
                         </span> 
                     </span>
                 </div>
-                <form action="{{ route('checkout', $event->id) }}" method="POST">
+                <form action="{{ route('checkout', $event->id) }}" method="POST" enctype="multipart/form-data">
+
                     @csrf
                     <div class="form-group">
                         <label for="status" class="fw-bold" style="display: block; text-align: left; margin-bottom: 5px; color: #273A8B;">Status</label>
@@ -76,13 +78,13 @@
                             <img src="{{ asset('poster/' . $event->poster) }}" alt="Poster Event"
                                 style="width: 100%; max-width: 200px; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);">
                         </div>
-                    
+
                         <!-- Kolom Kanan: Detail Tiket -->
                         <div class="col-md-10" style="text-align: start !important">
                             <h5 class="fw-bold" style="color: #273A8B;">{{ $event->event_name }}</h5>
                             <p class="text-muted mb-1"><i class='bx bx-calendar'></i> {{ date('d M Y', strtotime($event->event_date)) }}</p>
                             <p class="text-muted mb-1"><i class='bx bx-map'></i>SMKN 2 KOTA BEKASI</p>
-                            
+
                             <div class="d-flex justify-content-between mt-4">
                                 <span>Harga Tiket</span>
                                 <span class="fw-bold" style="color: #273A8B;">Rp {{ number_format($event->event_price, 0, ',', '.') }}</span>
@@ -97,11 +99,33 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-4" style="width: 100%; border-radius: 10px; background-color: #273A8B; padding: 1rem; font-weight: bold;">Pesan Tiket</button>
+
+                    <h4 style="color: #273A8B; text-align: start;" class="fw-bold mt-5">Cara Membayar</h4>
+                    <ol class="text-start">
+                        <li>Buka aplikasi m-banking atau e-wallet favorit kamu.</li>
+                        <li>Masukkan nomor rekening atau nomor tujuan berikut: <strong>123-456-789 (BCA)</strong>.</li>
+                        <li>Masukkan jumlah sesuai dengan harga tiket.</li>
+                        <li>Konfirmasi pembayaran dan simpan bukti transfer.</li>
+                        <li>Upload bukti transfer pada form di bawah.</li>
+                    </ol>
+                    <h4 style="color: #273A8B; text-align: start;" class="fw-bold mt-5">Upload Bukti Transfer</h4>
+                    <input type="file" name="bukti_tf" class="dropify" data-height="200" required>
+                    <div class="col-12" style="align-items: start !important">
+                        <button type="submit" class="btn btn-primary mt-4"
+                            style=" border-radius: 10px; background-color: #d0d0d0; padding: 1rem; font-weight: bold; border: 0 !important;">Batal</button>
+                        <button type="submit" class="btn btn-primary mt-4"
+                            style=" border-radius: 10px; background-color: #273A8B; padding: 1rem; font-weight: bold; border: 0 !important;">Selanjutnya</button>
+                    </div>
                 </form>            
             </center>
         </div>
     </section>
 @endsection
 @section('script')
+<script src="https://cdn.jsdelivr.net/npm/dropify/dist/js/dropify.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.dropify').dropify();
+        });
+    </script>
 @endsection

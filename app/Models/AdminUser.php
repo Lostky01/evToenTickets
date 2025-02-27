@@ -15,7 +15,8 @@ class AdminUser extends Authenticatable
 
     protected $fillable = [
         'email',
-        'password'
+        'password',
+        'user_type'
     ];
 
     public function Event() {

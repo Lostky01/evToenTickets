@@ -124,7 +124,7 @@ hr {
   background-color: rgba(91, 102, 113, 0.15) !important;
 }
 .dark .text-primary {
-  color: #3a57e8 !important;
+  color: #273A8B !important;
 }
 .dark .text-secondary {
   color: #5c6ca5 !important;
@@ -247,7 +247,7 @@ hr {
   --bs-btn-hover-bg: rgba(58, 87, 232, 0.2);
   --bs-btn-hover-border-color: rgba(58, 87, 232, 0.2);
   --bs-btn-focus-shadow-rgb: 97, 121, 237;
-  --bs-btn-active-color: #3a57e8;
+  --bs-btn-active-color: #273A8B;
   --bs-btn-active-bg: rgba(58, 87, 232, 0.3);
   --bs-btn-active-border-color: rgba(58, 87, 232, 0.2);
   --bs-btn-active-shadow: 0 0px 0px rgba(0, 0, 0, 0);
@@ -481,7 +481,7 @@ hr {
   -webkit-transition: all 400ms ease;
   -o-transition: all 400ms ease;
   transition: all 400ms ease;
-  color: #3a57e8;
+  color: #273A8B;
 }
 .dark .nav {
   background: #222738;
@@ -657,8 +657,8 @@ hr {
 }
 .dark .alert-solid.alert-primary {
   --bs-alert-color: #fff;
-  --bs-alert-bg: #3a57e8;
-  --bs-alert-border-color: #3a57e8;
+  --bs-alert-bg: #273A8B;
+  --bs-alert-border-color: #273A8B;
 }
 .dark .alert-solid.alert-primary .alert-link {
   color: #cccccc;
@@ -776,7 +776,7 @@ hr {
           filter: unset;
 }
 .dark .alert-left.alert-primary {
-  border-color: #3a57e8;
+  border-color: #273A8B;
 }
 .dark .alert-left.alert-secondary {
   border-color: #5c6ca5;
@@ -806,7 +806,7 @@ hr {
   border-color: #343a40;
 }
 .dark .alert-top.alert-primary {
-  border-color: #3a57e8;
+  border-color: #273A8B;
 }
 .dark .alert-top.alert-secondary {
   border-color: #5c6ca5;
@@ -836,7 +836,7 @@ hr {
   border-color: #343a40;
 }
 .dark .alert-right.alert-primary {
-  border-color: #3a57e8;
+  border-color: #273A8B;
 }
 .dark .alert-right.alert-secondary {
   border-color: #5c6ca5;
@@ -866,7 +866,7 @@ hr {
   border-color: #343a40;
 }
 .dark .alert-bottom.alert-primary {
-  border-color: #3a57e8;
+  border-color: #273A8B;
 }
 .dark .alert-bottom.alert-secondary {
   border-color: #5c6ca5;
@@ -1016,7 +1016,7 @@ hr {
   color: #8A92A6;
 }
 .dark .dropdown-menu .dropdown-item:hover {
-  color: #3a57e8;
+  color: #273A8B;
   background-color: transparent;
 }
 .dark .like-block span {
@@ -1067,7 +1067,7 @@ hr {
 .dark .page-item.active .page-link {
   z-index: 3;
   color: #ffffff;
-  background-color: #3a57e8;
+  background-color: #273A8B;
   border-color: #5c6ca5;
 }
 .dark .page-item .page-link {
@@ -1174,7 +1174,7 @@ hr {
   background: rgba(58, 87, 232, 0.1) !important;
 }
 .dark.boxed {
-  background: #3a57e8 !important;
+  background: #273A8B !important;
 }
 .dark.boxed .boxed-inner {
   background: #151824;

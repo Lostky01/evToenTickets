@@ -5,13 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\AdminUser;
 use App\Models\Event;
 use App\Models\Ticket;
+use App\Models\Transactions;
 use App\Models\Users;
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
 class EventController extends Controller
 {
+
+    public function mainShow()
+    {
+        $event = Event::orderBy('created_at', 'desc')->get();
+        if (auth('admin')->check()) { // Cek apakah admin
+            return view('dashboard.main', compact('event'));
+        } elseif (auth()->check()) { // Kalau user biasa
+            return redirect()->route('home')->with('error', 'Akses ditolak!');
+        } else { // Kalau belum login
+            return redirect()->route('login-admin-menu')->with('error', 'Anda Belum Login!');
+        }
+
+    }
     public function index()
     {
         $event = Event::orderBy('created_at', 'desc')->get();
@@ -64,16 +79,29 @@ class EventController extends Controller
     {
         $request->validate([
             'event_name' => 'required',
-            'event_type' => 'required',
-            'event_price' => 'required',
+            'event_type' => 'required|in:Umum,Tidak Umum',
+            'event_price' => 'required|integer',
+            'event_description' => 'required',
+            'event_date' => 'required|date',
+            'quota_for_public' => 'nullable|integer',
             'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:99999',
+            'ig_link' => 'nullable|url',
+            'twitter_link' => 'nullable|url',
+            'yt_link' => 'nullable|url',
+            'tiktok_link' => 'nullable|url',
         ]);
 
         $event = new Event();
         $event->event_name = $request->event_name;
         $event->event_type = $request->event_type;
+        $event->event_description = strip_tags($request->event_description); // Buat mencegah XSS
         $event->event_price = $request->event_price;
-        $event->quota_for_public = $request->quota;
+        $event->event_date = $request->event_date;
+        $event->quota_for_public = $request->quota_for_public;
+        $event->ig_link = $request->ig_link;
+        $event->twitter_link = $request->twitter_link;
+        $event->yt_link = $request->yt_link;
+        $event->tiktok_link = $request->tiktok_link;
 
         if ($request->hasFile('poster')) {
             $event->poster = $this->uploadImage($request->file('poster'));
@@ -81,7 +109,7 @@ class EventController extends Controller
 
         $event->save();
 
-        return redirect()->route('index')->with('Sukses');
+        return redirect()->route('index')->with('success', 'Event berhasil dibuat!');
     }
 
     public function edit($id)
@@ -101,15 +129,25 @@ class EventController extends Controller
         $request->validate([
             'event_name' => 'required',
             'event_type' => 'required',
-            'event_price' => 'required',
+            'event_price' => 'required|numeric',
+            'event_desc' => 'nullable|string',
+            'ig_link' => 'nullable|url',
+            'twitter_link' => 'nullable|url',
+            'yt_link' => 'nullable|url',
+            'tiktok_link' => 'nullable|url',
             'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:99999',
         ]);
 
         $event = Event::findOrFail($id);
-        $event->event_name = $request->input('event_name');
-        $event->event_type = $request->input('event_type');
-        $event->event_price = $request->input('event_price');
-        $event->quota_for_public = $request->input('quota');
+        $event->event_name = $request->event_name;
+        $event->event_type = $request->event_type;
+        $event->event_price = $request->event_price;
+        $event->quota_for_public = $request->quota;
+        $event->event_description = strip_tags($request->event_description);
+        $event->ig_link = $request->ig_link;
+        $event->twitter_link = $request->twitter_link;
+        $event->yt_link = $request->yt_link;
+        $event->tiktok_link = $request->tiktok_link;
 
         if ($request->hasFile('poster')) {
             if ($event->poster) {
@@ -120,7 +158,7 @@ class EventController extends Controller
 
         $event->save();
 
-        return redirect()->route('index')->with('Sukses');
+        return redirect()->route('index')->with('Sukses', 'Event berhasil diperbarui!');
     }
 
     private function uploadImage($imageFile)
@@ -284,15 +322,71 @@ class EventController extends Controller
         ]);
     }
 
+    public function TicketStatusShow()
+    {
+        $transactions = Transactions::all();
+        return view('dashboard.status_tiket', compact('transactions'));
+    }
 
-    public function ShowTransactionsHistory() {
+    public function ConfirmTicket($id)
+    {
+        $transaction = Transactions::findOrFail($id);
+
+        // Generate QR Code untuk tiket
+        $ticket = new Ticket();
+        $ticket->event_id = $transaction->event_id;
+        $ticket->user_id = $transaction->user_id;
+        $ticket->admin_id = $transaction->admin_id;
+        $ticket->ticket_code = strtoupper(bin2hex(random_bytes(3)));
+        $ticket->is_verified = 0;
+        $ticket->is_read = 0;
+
+        $qrPath = 'tickets-qr/' . $ticket->ticket_code . '.png';
+
+        if (!File::exists(public_path('tickets-qr'))) {
+            File::makeDirectory(public_path('tickets-qr'), 0755, true);
+        }
+
+        QrCode::format('png')->size(250)->generate(route('ticket-success', $ticket->ticket_code), public_path($qrPath));
+
+        $ticket->save();
+
+        // Update status transaksi menjadi dikonfirmasi
+        $transaction->is_confirmed = 1;
+        $transaction->save();
+
+        return redirect()->back()->with('success', 'Tiket berhasil dikonfirmasi dan QR Code telah dibuat.');
+    }
+
+    public function RejectTicket($id)
+    {
+        $transaction = Transactions::findOrFail($id);
+        
+        // Hapus transaksi jika belum dikonfirmasi
+        if ($transaction->is_confirmed == 0) {
+            $transaction->delete();
+            return redirect()->back()->with('success', 'Transaksi berhasil ditolak dan dihapus.');
+        }
+        
+        return redirect()->back()->withErrors(['error' => 'Transaksi sudah dikonfirmasi, tidak bisa ditolak.']);
+    }
+
+    public function countUnreadTransactions()
+    {
+        return Ticket::where('is_read', 0)->count();
+    }
+
+    public function ShowTransactionsHistory()
+    {
         $transactions = Ticket::with(['event', 'user', 'admin'])
             ->orderBy('created_at', 'desc')
             ->get();
-    
+
+        // Update semua transaksi jadi terbaca
+        Ticket::where('is_read', 0)->update(['is_read' => 1]);
+
         return view('dashboard.transactions_history', compact('transactions'));
     }
-    
 
 }
 

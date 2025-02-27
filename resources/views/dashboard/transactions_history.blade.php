@@ -41,7 +41,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                {{ $item->admin_id ? 'Admin' : 'User' }}
+                                                {{ $item->admin_id ? 'Admin' : $item->user->user_type }}
                                             </td>
                                         </tr>
                                     @endforeach

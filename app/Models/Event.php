@@ -14,6 +14,7 @@ class Event extends Model
         'event_type',
         'event_date',
         'event_price',
+        'event_description',
         'quota_for_public',
         'poster',
     ];

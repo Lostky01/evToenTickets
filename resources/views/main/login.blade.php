@@ -76,6 +76,17 @@
                     </div>
                 </div>
             </div>
+            <div class="container" style="margin-top:10%">
+                <center><span style="color: #7D829B">Evtoen ©
+                        <script>document.write(new Date().getFullYear())</script>. All copyrights belong to 3R gen 19
+                    </span></center>
+                <div class="col-12 mt-3 d-flex justify-content-center mx-auto">
+                        <a class="mx-2" href=""><img src="{{ asset('images/ig_white.png') }}" alt=""></a>
+                        <a class="mx-2" href=""><img src="{{ asset('images/x_white.png') }}" alt=""></a>
+                        <a class="mx-2" href=""><img src="{{ asset('images/tiktok_white.png') }}" alt=""></a>
+                        <a class="mx-2" href=""><img src="{{ asset('images/youtube_white.png') }}" alt=""></a>
+                </div>
+            </div>
         </div>
     </section>
 </body>

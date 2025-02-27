@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\AdminUser;
 use App\Models\Event;
 use App\Models\Ticket;
+use App\Models\Transactions;
 use App\Models\Users;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class LandingController extends Controller
 {
@@ -189,53 +190,107 @@ class LandingController extends Controller
     {
         $event = Event::findOrFail($id);
         $today = date('Y-m-d');
+        
 
         if (!auth('admin')->check()) {
-            if ($today < $event->event_date) {
-                return redirect()->back()->withErrors(['error' => 'Event belum dimulai, tidak bisa membeli tiket']);
-            }
+            /* if ($today < $event->event_date) {
+                abort(403, 'Event belum dimulai, tidak bisa membeli tiket');
+            } */
             if ($today > $event->event_date) {
-                return redirect()->back()->withErrors(['error' => 'Event sudah berakhir, tidak bisa membeli tiket']);
+                abort(403, 'Event sudah berakhir, tidak bisa membeli tiket');
             }
         }
+        
+        
 
-        $ticket = new Ticket();
-
+        // Generate transaction_number (6 karakter random: angka + huruf besar)
+        $transactionNumber = strtoupper(Str::random(6));
+        
+        $transaction = new Transactions();
+        $transaction->event_id = $event->id;
+        $transaction->transaction_number = $transactionNumber;
+        $transaction->is_confirmed = auth('admin')->check() ? 1 : 0;
+        
         if (auth('admin')->check()) {
-            $ticket->admin_id = auth('admin')->user()->id;
-            $ticket->user_type = 'Admin';
+            $transaction->admin_id = auth('admin')->user()->id;
+            $transaction->bukti_tf = null; // Admin nggak perlu upload bukti
         } elseif (auth()->check()) {
             $user = auth()->user();
-            $ticket->user_id = $user->id;
-            $ticket->user_type = $user->user_type;
+            $transaction->user_id = $user->id;
 
-            if ($user->user_type === 'External') {
-                if ($event->quota_for_public <= 0) {
-                    return redirect()->back()->withErrors(['error' => 'Kuota publik sudah habis']);
-                }
-                $event->quota_for_public -= 1;
-                $event->save();
+            if (!$request->hasFile('bukti_tf')) {
+                return redirect()->back()->withErrors(['error' => 'Bukti transfer wajib diunggah']);
             }
+            /* dd('test'); */
+            // Simpan file bukti tf ke public/bukti-tf/
+            $buktiTf = $request->file('bukti_tf');
+            $buktiName = 'bukti_' . time() . '.' . $buktiTf->getClientOriginalExtension();
+            $buktiTf->move(public_path('bukti-tf'), $buktiName);
+
+            $transaction->bukti_tf = $buktiName;
         } else {
             return redirect()->back()->withErrors(['error' => 'Anda harus login untuk memesan tiket']);
         }
+        
 
-        $ticket->event_id = $event->id;
-        $ticket->ticket_code = strtoupper(bin2hex(random_bytes(3)));
-        $ticket->is_verified = 0;
+        $transaction->save();
 
-        $qrPath = 'tickets-qr/' . $ticket->ticket_code . '.png';
-
-        if (!File::exists(public_path('tickets-qr'))) {
-            File::makeDirectory(public_path('tickets-qr'), 0755, true);
-        }
-
-        QrCode::format('png')->size(250)->generate(route('ticket-success', $ticket->ticket_code), public_path($qrPath));
-
-        $ticket->save();
-
-        return view('main.ticket_success', compact('event', 'ticket', 'qrPath'));
+        return redirect()->route('home')->with('success', 'Transaksi berhasil!');
     }
+
+    /* public function checkout(Request $request, $id)
+    {
+
+    $event = Event::findOrFail($id);
+    $today = date('Y-m-d');
+
+    if (!auth('admin')->check()) {
+
+    if ($today < $event->event_date) {
+    return redirect()->back()->withErrors(['error' => 'Event belum dimulai, tidak bisa membeli tiket']);
+    }
+    if ($today > $event->event_date) {
+    return redirect()->back()->withErrors(['error' => 'Event sudah berakhir, tidak bisa membeli tiket']);
+
+    }
+    }
+    $ticket = new Ticket();
+    if (auth('admin')->check()) {
+    $ticket->admin_id = auth('admin')->user()->id;
+    $ticket->user_type = 'Admin';
+    } elseif (auth()->check()) {
+    $user = auth()->user();
+    $ticket->user_id = $user->id;
+    $ticket->user_type = $user->user_type;
+
+    if ($user->user_type === 'External') {
+    if ($event->quota_for_public <= 0) {
+    return redirect()->back()->withErrors(['error' => 'Kuota publik sudah habis']);
+    }
+    $event->quota_for_public -= 1;
+    $event->save();
+    }
+    } else {
+    return redirect()->back()->withErrors(['error' => 'Anda harus login untuk memesan tiket']);
+    }
+
+    $ticket->event_id = $event->id;
+    $ticket->ticket_code = strtoupper(bin2hex(random_bytes(3)));
+    $ticket->is_verified = 0;
+    $ticket->is_read = 0;
+
+    $qrPath = 'tickets-qr/' . $ticket->ticket_code . '.png';
+
+    if (!File::exists(public_path('tickets-qr'))) {
+    File::makeDirectory(public_path('tickets-qr'), 0755, true);
+    }
+
+    QrCode::format('png')->size(250)->generate(route('ticket-success', $ticket->ticket_code), public_path($qrPath));
+
+    $ticket->save();
+
+    return view('main.ticket_success', compact('event', 'ticket', 'qrPath'));
+    } */
 
     public function downloadQr(Ticket $ticket)
     {

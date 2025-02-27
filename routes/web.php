@@ -17,7 +17,9 @@ use App\Http\Controllers\LandingController;
 |
 */
 
-Route::get('/',[EventController::class, 'index'])->name('index');
+Route::get('/',[EventController::class, 'mainShow'])->name('dash');
+Route::get('/ticket-status',[EventController::class, 'TicketStatusShow'])->name('status-tiket');
+Route::get('/event-manage',[EventController::class, 'index'])->name('index');
 Route::get('/siswa-table',[EventController::class, 'user_table'])->name('siswa-table');
 Route::get('/siswa-create-menu',[EventController::class, 'CreateSiswaMenu'])->name('siswa-create-menu');
 Route::post('/siswa/create', [EventController::class, 'createSiswa'])->name('create-siswa');
@@ -28,6 +30,8 @@ Route::get('/edit-event/{id}',[EventController::class, 'edit'])->name('edit');
 Route::get('/transactions-history',[EventController::class, 'ShowTransactionsHistory'])->name('transaction-history');
 Route::put('/edit/events/{id}', [EventController::class, 'update'])->name('edit-store');
 Route::delete('/delete/events/{id}', [EventController::class, 'destroy'])->name('destroy');
+Route::patch('/transaction/{id}/confirm', [EventController::class, 'confirmTicket'])->name('transaction.confirm');
+Route::patch('/transaction/{id}/reject', [EventController::class, 'rejectTicket'])->name('transaction.reject');
 Route::get('/scannershow',[EventController::class, 'ScannerShow'])->name('qr-scanner');
 Route::post ('/scan-tiket',[EventController::class, 'scanTicket'])->name('scan-tiket');
 

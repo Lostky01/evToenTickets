@@ -11,9 +11,16 @@ class Ticket extends Model
 
     protected $fillable = [
         'user_id',
+        'admin_id',
         'event_id',
         'ticket_code',
+        'is_verified',
+        'user_type',
+        'is_read'
     ];
+
+    protected $guarded = [];
+
 
     public function user()
     {
