@@ -242,8 +242,7 @@ class EventController extends Controller
             return response()->json(['message' => 'Request tidak mengandung ticket_code'], 400);
         }
 
-        $rawCode = $request->input('ticket_code');
-        $code = basename($rawCode);
+        $code = $request->input('ticket_code');
 
         \Log::info('Extracted ticket_code: ' . $code);
 
@@ -347,7 +346,11 @@ class EventController extends Controller
             File::makeDirectory(public_path('tickets-qr'), 0755, true);
         }
 
-        QrCode::format('png')->size(500)->generate($ticket->ticket_code, public_path($qrPath));
+        QrCode::format('png')
+        ->size(500)
+        ->errorCorrection('M') // Bisa diganti 'Q' kalau masih susah ke-scan
+        ->margin(2)
+        ->generate($ticket->ticket_code, public_path($qrPath));
 
         $ticket->save();
 
