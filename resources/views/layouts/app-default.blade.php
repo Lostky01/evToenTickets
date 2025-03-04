@@ -258,7 +258,7 @@
                     <path d="M18.0186 18.4851L21.5426 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
               </span>
-              <input type="search" class="form-control" placeholder="Cari Event" style="width: 1100px; margin-right:100px; border-radius: 5px;">
+              <input type="search" class="form-control" placeholder="Cari Event" style="width: 900px; margin-right:100px; border-radius: 5px;">
               <a href="{{ route('qr-scanner') }}" class="btn btn-primary" style="z-index: 9999; border-radius: 5px !important;"><i class='bx bx-qr-scan' style="font-size:1.2rem !important;"></i> Scan QR Code</a>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

@@ -8,12 +8,12 @@ use App\Models\Ticket;
 use App\Models\Transactions;
 use App\Models\Users;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class LandingController extends Controller
 {
@@ -172,7 +172,7 @@ class LandingController extends Controller
     public function detailShow($id)
     {
         $event = Event::findOrFail($id);
-        return view('home', compact('event'));
+        return view('main.detail-event', compact('event'));
     }
 
     public function showCheckout($id)
@@ -186,31 +186,49 @@ class LandingController extends Controller
 
     }
 
+    public function showHistory()
+    {
+        if (auth('admin')->check()) {
+            $transactions = Transactions::with('event')
+                ->whereNotNull('admin_id')
+                ->where('admin_id', auth('admin')->user()->id)
+                ->latest()
+                ->get();
+        } elseif (auth()->check()) {
+            $transactions = Transactions::with('event')
+                ->whereNotNull('user_id')
+                ->where('user_id', auth()->user()->id)
+                ->latest()
+                ->get();
+        } else {
+            return redirect()->route('login-menu')->withErrors(['error' => 'Anda harus login untuk melihat riwayat transaksi']);
+        }
+
+        return view('main.history', compact('transactions'));
+    }
+
     public function checkout(Request $request, $id)
     {
         $event = Event::findOrFail($id);
         $today = date('Y-m-d');
-        
 
         if (!auth('admin')->check()) {
             /* if ($today < $event->event_date) {
-                abort(403, 'Event belum dimulai, tidak bisa membeli tiket');
+            abort(403, 'Event belum dimulai, tidak bisa membeli tiket');
             } */
             if ($today > $event->event_date) {
                 abort(403, 'Event sudah berakhir, tidak bisa membeli tiket');
             }
         }
-        
-        
 
         // Generate transaction_number (6 karakter random: angka + huruf besar)
         $transactionNumber = strtoupper(Str::random(6));
-        
+
         $transaction = new Transactions();
         $transaction->event_id = $event->id;
         $transaction->transaction_number = $transactionNumber;
         $transaction->is_confirmed = auth('admin')->check() ? 1 : 0;
-        
+
         if (auth('admin')->check()) {
             $transaction->admin_id = auth('admin')->user()->id;
             $transaction->bukti_tf = null; // Admin nggak perlu upload bukti
@@ -231,7 +249,6 @@ class LandingController extends Controller
         } else {
             return redirect()->back()->withErrors(['error' => 'Anda harus login untuk memesan tiket']);
         }
-        
 
         $transaction->save();
 

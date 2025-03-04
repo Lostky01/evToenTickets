@@ -5,13 +5,17 @@
 @endsection
 
 @section('style')
-    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         #preview {
             width: 100%;
             max-width: 700px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        #qr-reader {
+            width: 100%;
+            max-width: 700px;
         }
     </style>
 @endsection
@@ -28,7 +32,7 @@
                     </div>
                     <div class="card-body">
                         <center>
-                            <video id="preview"></video>
+                            <div id="qr-reader"></div>
                         </center>
                     </div>
                 </div>
@@ -58,11 +62,8 @@
 @section('script')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        let scanner = new Instascan.Scanner({ video: document.getElementById('preview'), mirror: false });
-
-        // Event saat QR Code terdeteksi
-        scanner.addListener('scan', function (content) {
-            console.log('✅ QR Code Terbaca:', content); // Debug data yang dikirim
+        function onScanSuccess(content) {
+            console.log('✅ QR Code Terbaca:', content);
 
             fetch('{{ route('scan-tiket') }}', {
                 method: 'POST',
@@ -74,30 +75,27 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log('✅ Response dari server:', data); // Debug response dari server
+                console.log('✅ Response dari server:', data);
+                let message = "";
 
                 if (data.message === 'Event belum dimulai') {
-                    document.getElementById('modalMessage').innerHTML = "<strong>⚠️ Event ini belum dimulai. Silakan tunggu hingga event berlangsung.</strong>";
+                    message = "<strong>⚠️ Event ini belum dimulai. Silakan tunggu hingga event berlangsung.</strong>";
                 } else if (data.message === 'Event sudah berakhir') {
-                    document.getElementById('modalMessage').innerHTML = "<strong>❌ Event ini sudah berakhir. Tiket tidak dapat digunakan.</strong>";
+                    message = "<strong>❌ Event ini sudah berakhir. Tiket tidak dapat digunakan.</strong>";
                 } else if (data.message === 'Tiket sudah digunakan') {
-                    document.getElementById('modalMessage').innerHTML = "<strong>❌ Tiket ini sudah digunakan sebelumnya dan tidak dapat dipakai lagi.</strong>";
+                    message = "<strong>❌ Tiket ini sudah digunakan sebelumnya dan tidak dapat dipakai lagi.</strong>";
                 } else if (data.status === 'success') {
-                    // Buat tampilan informasi user
                     let userInfoHtml = '<ul>';
                     for (const [key, value] of Object.entries(data.user_info)) {
                         userInfoHtml += `<li><strong>${key}:</strong> ${value}</li>`;
                     }
                     userInfoHtml += '</ul>';
-
-                    // Tampilkan di modal
-                    document.getElementById('modalMessage').innerHTML = `
-                    <strong>${data.message}</strong><br>
-                    <strong>Tipe Pengguna:</strong> ${data.user_type}<br>
-                    ${userInfoHtml}`;
+                    message = `<strong>${data.message}</strong><br><strong>Tipe Pengguna:</strong> ${data.user_type}<br>${userInfoHtml}`;
                 } else {
-                    document.getElementById('modalMessage').innerHTML = "<strong>❌ Kesalahan: " + data.message + "</strong>";
+                    message = `<strong>❌ Kesalahan: ${data.message}</strong>`;
                 }
+
+                document.getElementById('modalMessage').innerHTML = message;
                 let resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
                 resultModal.show();
             })
@@ -107,28 +105,13 @@
                 let resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
                 resultModal.show();
             });
-        });
+        }
 
-        // Cek daftar kamera
-        Instascan.Camera.getCameras().then(function (cameras) {
-            console.log('📷 Daftar Kamera:', cameras); // Debug kamera yang tersedia
-
-            if (cameras.length > 0) {
-                let selectedCamera = cameras[0]; // Default pakai kamera pertama
-                for (let cam of cameras) {
-                    if (cam.name.toLowerCase().includes('hd') || cam.name.toLowerCase().includes('high')) {
-                        selectedCamera = cam;
-                        break;
-                    }
-                }
-                scanner.start(selectedCamera);
-            } else {
-                console.error('❌ Kamera tidak ditemukan.');
-            }
-        }).catch(function (e) {
-            console.error('❌ Error deteksi kamera:', e);
+        let html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", {
+            fps: 10,
+            qrbox: { width: 250, height: 250 }
         });
+        html5QrcodeScanner.render(onScanSuccess);
     });
 </script>
 @endsection
-

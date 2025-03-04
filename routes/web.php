@@ -43,12 +43,14 @@ Route::post('/login', [LandingController::class, 'login'])->name('login');
 Route::post('/login/admin', [LandingController::class, 'loginAdmin'])->name('login-admin');
 Route::post('/register', [LandingController::class, 'register'])->name('register');
 Route::get('/home',[LandingController::class, 'home'])->name('home');
+Route::get('/history',[LandingController::class, 'showHistory'])->name('history');
 
 Route::get('/otp', function () {
     return view('main.otp');
 })->name('otp-form');
 
 Route::post('/otp/verify', [LandingController::class, 'verifyOtp'])->name('otp.verify');
+Route::get('/detail/event/{id}', [LandingController::class, 'detailShow'])->name('detail-event');
 Route::get('/menu/checkout/{id}', [LandingController::class, 'showCheckout'])->name('checkout-menu');
 Route::post('/checkout/{id}', [LandingController::class, 'checkout'])->name('checkout');
 Route::get('/ticket/success/{$id}', [LandingController::class, 'showTicket'])->name('ticket-success');

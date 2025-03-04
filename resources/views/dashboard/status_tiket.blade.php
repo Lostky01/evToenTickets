@@ -42,8 +42,10 @@
                                                 </a>
                                             </td>
                                             <td>
-                                                @if ($transaction->is_confirmed)
+                                                @if ($transaction->is_confirmed == 1)
                                                     <span class="badge bg-success">Terkonfirmasi</span>
+                                                @elseif ($transaction->is_confirmed == -1)
+                                                    <span class="badge bg-danger">Ditolak</span>
                                                 @else
                                                     <span class="badge bg-warning">Menunggu Konfirmasi</span>
                                                 @endif
@@ -61,7 +63,11 @@
                                                         <button type="submit" class="btn btn-danger btn-sm">Tolak</button>
                                                     </form>
                                                 @else
-                                                Sudah di konfirmasi    
+                                                   @if($transaction->is_confirmed == -1)
+                                                   Ditolak
+                                                   @else
+                                                   Sudah Di Konfirmasi
+                                                   @endif
                                                 @endif
                                             </td>
                                         </tr>

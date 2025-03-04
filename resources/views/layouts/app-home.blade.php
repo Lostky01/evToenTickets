@@ -257,14 +257,14 @@
                 <a href="#" class="nav_logo">
                     <img src="{{ asset('images/logo-header.png') }}" alt="" style="width: auto" height="45" /></a>
                 <div class="nav_list">
-                    <a href="#" class="nav_link {{ request()->routeIs('home') ? 'active' : '' }}">
+                    <a href="{{ route('home') }}" class="nav_link {{ request()->routeIs('home') ? 'active' : '' }}">
                         <i class='bx bx-home nav_icon'></i>
                         <span class="nav_name">Beranda</span>
                     </a>
                     <a href="{{ route('tiket-saya') }}" class="nav_link">
                         <i class='bx bxs-coupon nav_icon'></i> <span class="nav_name"> Tiket Saya</span>
                     </a>
-                    <a href="#" class="nav_link">
+                    <a href="{{ route('history') }}" class="nav_link">
                         <i class='bx bx-history nav_icon'></i>
                         <span class="nav_name">History</span>
                     </a>
@@ -293,6 +293,7 @@
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 @yield('script')
 <script>
     document.addEventListener("DOMContentLoaded", function () {

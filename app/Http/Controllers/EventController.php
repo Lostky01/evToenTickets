@@ -347,7 +347,7 @@ class EventController extends Controller
             File::makeDirectory(public_path('tickets-qr'), 0755, true);
         }
 
-        QrCode::format('png')->size(250)->generate(route('ticket-success', $ticket->ticket_code), public_path($qrPath));
+        QrCode::format('png')->size(500)->generate($ticket->ticket_code, public_path($qrPath));
 
         $ticket->save();
 
@@ -364,8 +364,8 @@ class EventController extends Controller
         
         // Hapus transaksi jika belum dikonfirmasi
         if ($transaction->is_confirmed == 0) {
-            $transaction->delete();
-            return redirect()->back()->with('success', 'Transaksi berhasil ditolak dan dihapus.');
+            $transaction->update(['is_confirmed' => -1]); // Set status ke Ditolak
+            return redirect()->back()->with('success', 'Transaksi berhasil ditolak.');
         }
         
         return redirect()->back()->withErrors(['error' => 'Transaksi sudah dikonfirmasi, tidak bisa ditolak.']);

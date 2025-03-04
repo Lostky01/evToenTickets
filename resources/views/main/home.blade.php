@@ -1,57 +1,44 @@
 @extends('layouts.app-home')
 @section('Title')
-Home
+    Home
+@endsection
+@section('style')
+<style>
+    .card-title {
+        color: #273A8B;
+    }
+    .card-text {
+        color: #7D829B;
+    }
+</style>
 @endsection
 @section('content')
-<div class="container-fluid">
-    @if(auth('admin')->check() && auth('admin')->user()->user_type == 'Admin')
-        <h1>Anda Login Sebagai Admin</h1>
-        
-    @elseif(auth()->check())
-        <h1>Anda login sebagai:</h1>
-        <ul>
-            <li><strong>NIS / Email:</strong> {{ auth()->user()->nis ?? auth()->user()->email }}</li>
-            <li><strong>User ID:</strong> {{ auth()->user()->id }}</li>
-            <li><strong>Username:</strong> {{ auth()->user()->name }}</li>
-            <li><strong>Apakah sudah verified:</strong>
-                {{ auth()->user()->is_verified == '1' ? 'Sudah verified' : 'Belum verified' }}</li>
-            <li><strong>Tipe User:</strong> {{ auth()->user()->user_type }}</li>
-        </ul>
-    @else
-        <h1>Anda belum login</h1>
-    @endif
-
-    <h2>Daftar Event</h2>
-    <ul>
-        @foreach($event as $e)
-            <li>
-                <strong>{{ $e->event_name }}</strong> <br>
-                <small>Tanggal: {{ $e->event_date }}</small> <br>
-                <small>Tipe Event: {{ $e->event_type }}</small> <br>
-                <small>Kuota Untuk Publik: {{ $e->quota_for_public }}</small> <br>
-                <small>Harga: Rp{{ number_format($e->event_price, 0, ',', '.') }}</small> <br>
-                <a href="{{ route('checkout', ['id' => $e->id]) }}">
-                    <button>Beli Tiket</button>
-                </a>
-            </li>
-            <hr>
-        @endforeach
-    </ul>
-    
-    @if(auth()->user())
-        @if(auth()->user()->tickets)
-            <h2>Daftar Tiket Saya</h2>
-            <ul>
-                @foreach(auth()->user()->tickets as $ticket)
-                    <li>
-                        <strong>Event:</strong> {{ $ticket->event->event_name }} <br>
-                        <strong>Kode Tiket:</strong> {{ $ticket->ticket_code }} <br>
-                        <img src="{{ route('ticket.qr', ['ticket_code' => $ticket->ticket_code]) }}" alt="QR Code">
-                    </li>
-                    <hr>
+    <section class="p-5">
+        <div class="container-fluid p-5" style="background-color:white; border-radius: 10px;">
+            <img src="{{ asset('images/baneratas.png') }}" alt="" style="width: auto; height:auto">
+            <span class="activee mt-5">
+                <h5 class="fw-bold mt-5" href="" style="color: #273A8B;">Konser Tersedia</h5>
+            </span>
+            <div class="row mt-4">
+                @foreach($event as $e)
+                    <div class="col-3">
+                        <div class="card" style="width: 15rem; border: 0 !important;">
+                            <img src="{{ asset('poster/' . $e->poster) }}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ $e->event_name }}</h6>
+                                <p class="card-text" style="font-size:0.8rem">SMKN 2 KOTA BEKASI</p>
+                                <p class="card-text fw-bold" style="color: #273A8B !important;">Rp {{ number_format($e->event_price, 0, ',', '.') }}</p>
+                                <a href="{{ route('detail-event', $e->id) }}" class="btn btn-primary" style="background-color: #273A8B; border: 0 !important; width: 100%;">Detail Event</a>
+                            </div>
+                        </div>
+                    </div>
                 @endforeach
-            </ul>
-        @endif
-    @endif
-</div>
+            </div>
+            
+        </div>
+    </section>
+
+@endsection
+@section('script')
+
 @endsection
