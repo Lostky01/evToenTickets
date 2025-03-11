@@ -14,6 +14,18 @@
 
 🔥 **Scanner Logic Improvements**: Now the scanner actually understands time. It knows if the event is ongoing, finished, or hasn't started yet. Smarter than some people, tbh.
 
+🚀 NEWEST & FINAL FEATURES (March 11, 2025)
+
+✨ QR Scanner Finally Works Properly: No more janky scans, it actually detects time and event status now. Took me long enough.
+
+✨ New Checkout Method: Now admins gotta confirm the payment proof before checkout is valid. No more fake payments, you broke boi.
+
+✨ CRUD for Students: Finally added CRUD for students. Now the system ain't just floating in space.
+
+✨ Reset Password: For all the people who somehow forget their own password. Congrats, now you get a second chance at life.
+
+✨ Final Touches & Bug Fixes: Everything that was annoying should be gone. If not, that ain't my problem anymore.
+
 ---
 
 ## ❓ Q&A
@@ -22,7 +34,7 @@
 <i style="color: cyan;">Please mind reading the about first.</i>
 
 ### 🤨 Why are you still using PHP?
-<i style="color: red;"> PHP gets the job done. Plus, I'm transitioning to electrical engineering soon. Web development? Nuh uh, not my problem anymore.</i>
+<i style="color: red;"> PHP gets the job done. Plus, I'm transitioning to electrical engineering soon. Web development? This ain't my life no more.</i>
 
 ### 🤨 Why are you using a template?
 <i style="color: green;">Hell no, I'm not wasting my time crafting CSS from scratch. You want a pretty site or a hot mess? Time's ticking, and I'm not getting paid for this. Deal with it.</i>
@@ -104,8 +116,8 @@
 
 ## 🎯 Future Plans
 
-- Maybe adding more automation
-- Maybe making it prettier
+- Maybe adding more automation (if I get forced to touch this again)
+- Maybe making it prettier (unlikely)
 - Maybe... just quitting web dev for good
 - Maybe replacing myself with AI so I can sleep more
 
@@ -116,3 +128,7 @@
 Wanna roast my code or contribute? Hit me up:
 📧 Email: vndrdcan@gmail.com
 📌 GitHub: [Lostky01](https://github.com/Lostky01/evToenTickets)
+
+### TL;DR:
+
+<p style="font-weight:bold">The project is DONE. I'm OUT. Won't touch this again unless absolutely necessary (a.k.a. school forces me to). Enjoy the system or don't.</p>
