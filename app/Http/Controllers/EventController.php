@@ -8,9 +8,9 @@ use App\Models\Ticket;
 use App\Models\Transactions;
 use App\Models\Users;
 use Illuminate\Http\Request;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EventController extends Controller
 {
@@ -50,6 +50,77 @@ class EventController extends Controller
         } else { // Kalau belum login
             return redirect()->route('login-admin-menu')->with('error', 'Anda Belum Login!');
         }
+    }
+
+    public function CreateSiswaMenu()
+    {
+        return view('dashboard.add_siswa');
+    }
+
+    public function createSiswa(Request $request)
+    {
+        $request->validate([
+            'nis' => 'required|unique:users,nis',
+            'name' => 'required|string|max:255',
+            'password' => 'required|min:6',
+            'kelas' => 'required|in:X,XI,XII',
+            'jurusan' => 'required|in:Akuntansi,Teknik Komputer Jaringan,Rekayasa Perangkat Lunak,Teknik Elektronika Industri,Teknik Energi Terbarukan,Teknik Bisnis Sepeda Motor',
+            'no_kelas' => 'required|in:1,2,3,Industri',
+        ]);
+
+        $siswa = new Users();
+        $siswa->nis = $request->nis;
+        $siswa->name = $request->name;
+        $siswa->kelas = $request->kelas;
+        $siswa->jurusan = $request->jurusan;
+        $siswa->no_kelas = $request->no_kelas;
+        $siswa->user_type = 'Siswa';
+        $siswa->is_verified = 1;
+        $siswa->password = Hash::make($request->password);
+
+        $siswa->save();
+
+        return redirect()->route('siswa-table')->with('success', 'Siswa berhasil ditambahkan!');
+    }
+
+    public function editSiswa($id)
+    {
+        $siswa = Users::findOrFail($id);
+        return view('dashboard.edit_siswa',compact('siswa'));
+    }
+
+    public function updateSiswa(Request $request, $id)
+    {
+        $request->validate([
+            'nis' => 'required|unique:users,nis,' . $id,
+            'name' => 'required|string|max:255',
+            'kelas' => 'required|in:X,XI,XII',
+            'jurusan' => 'required|in:Akuntansi,Teknik Komputer Jaringan,Rekayasa Perangkat Lunak,Teknik Elektronika Industri,Teknik Energi Terbarukan,Teknik Bisnis Sepeda Motor',
+            'no_kelas' => 'required|in:1,2,3,Industri',
+        ]);
+
+        $siswa = Users::findOrFail($id);
+        $siswa->nis = $request->nis;
+        $siswa->name = $request->name;
+        $siswa->kelas = $request->kelas;
+        $siswa->jurusan = $request->jurusan;
+        $siswa->no_kelas = $request->no_kelas;
+
+        if ($request->filled('password')) {
+            $siswa->password = Hash::make($request->password);
+        }
+
+        $siswa->save();
+
+        return redirect()->route('siswa-table')->with('success', 'Siswa berhasil diperbarui!');
+    }
+
+    public function deleteSiswa($id)
+    {
+        $siswa = Users::findOrFail($id);
+        $siswa->delete();
+
+        return redirect()->route('siswa-table')->with('success', 'Siswa berhasil dihapus!');
     }
 
     public function user_external_table()
@@ -200,37 +271,6 @@ class EventController extends Controller
         return redirect()->route('index');
     }
 
-    public function CreateSiswaMenu()
-    {
-        return view('dashboard.add_siswa');
-    }
-
-    public function createSiswa(Request $request)
-    {
-        $request->validate([
-            'nis' => 'required|unique:users,nis',
-            'name' => 'required|string|max:255',
-            'password' => 'required|min:6',
-            'kelas' => 'required|in:X,XI,XII',
-            'jurusan' => 'required|in:Akuntansi,Teknik Komputer Jaringan,Rekayasa Perangkat Lunak,Teknik Elektronika Industri,Teknik Energi Terbarukan,Teknik Bisnis Sepeda Motor',
-            'no_kelas' => 'required|in:1,2,3,Industri',
-        ]);
-
-        $siswa = new Users();
-        $siswa->nis = $request->nis;
-        $siswa->name = $request->name;
-        $siswa->kelas = $request->kelas;
-        $siswa->jurusan = $request->jurusan;
-        $siswa->no_kelas = $request->no_kelas;
-        $siswa->user_type = 'Siswa';
-        $siswa->is_verified = 1;
-        $siswa->password = Hash::make($request->password);
-
-        $siswa->save();
-
-        return redirect()->route('siswa-table')->with('success', 'Siswa berhasil ditambahkan!');
-    }
-
     public function ScannerShow()
     {
         return view('dashboard.qrcode_scanner');
@@ -324,6 +364,8 @@ class EventController extends Controller
     public function TicketStatusShow()
     {
         $transactions = Transactions::all();
+
+        Transactions::where('is_read', 0)->update(['is_read' => 1]);
         return view('dashboard.status_tiket', compact('transactions'));
     }
 
@@ -347,10 +389,10 @@ class EventController extends Controller
         }
 
         QrCode::format('png')
-        ->size(500)
-        ->errorCorrection('M') // Bisa diganti 'Q' kalau masih susah ke-scan
-        ->margin(2)
-        ->generate($ticket->ticket_code, public_path($qrPath));
+            ->size(500)
+            ->errorCorrection('M') // Bisa diganti 'Q' kalau masih susah ke-scan
+            ->margin(2)
+            ->generate($ticket->ticket_code, public_path($qrPath));
 
         $ticket->save();
 
@@ -364,19 +406,24 @@ class EventController extends Controller
     public function RejectTicket($id)
     {
         $transaction = Transactions::findOrFail($id);
-        
+
         // Hapus transaksi jika belum dikonfirmasi
         if ($transaction->is_confirmed == 0) {
             $transaction->update(['is_confirmed' => -1]); // Set status ke Ditolak
             return redirect()->back()->with('success', 'Transaksi berhasil ditolak.');
         }
-        
+
         return redirect()->back()->withErrors(['error' => 'Transaksi sudah dikonfirmasi, tidak bisa ditolak.']);
+    }
+
+    public function countUnreadTicket()
+    {
+        return Ticket::where('is_read', 0)->count();
     }
 
     public function countUnreadTransactions()
     {
-        return Ticket::where('is_read', 0)->count();
+        return Transactions::where('is_read', 0)->count();
     }
 
     public function ShowTransactionsHistory()

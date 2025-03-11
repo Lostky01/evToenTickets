@@ -62,9 +62,10 @@
                                         <input type="checkbox" class="form-check-input" id="rememberMe" name="remember">
                                         <label class="form-check-label" for="rememberMe">Ingat Saya</label>
                                     </div>
-                                    <a href="#" class="btn btn-link text-center"
-                                        style="color: #29366D !important; text-decoration:none; font-weight: bold;">Lupa
-                                        sandi?</a>
+                                    <a href="{{ route('password.reset.show') }}" class="btn btn-link text-center"
+                                        style="color: #29366D !important; text-decoration:none; font-weight: bold;">
+                                        Lupa sandi?
+                                    </a>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-block"
                                     style="width: 100%; background-color: #29366D;">Masuk</button>

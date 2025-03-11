@@ -67,7 +67,7 @@
 
                                 <!-- Password -->
                                 <div class="form-group col-md-6">
-                                    <label class="form-label" for="password">Password:</label>
+                                    <label class="form-label" for="password">Password (minimal 6 huruf atau angka):</label>
                                     <input type="password" class="form-control" id="password" name="password" required>
                                 </div>
                             </div>

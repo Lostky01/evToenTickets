@@ -146,14 +146,14 @@
             padding-left: calc(var(--nav-width) + 1rem);
         }
 
-        .active {
+        .activeone {
             color: var(--white-color);
-            background-color: #29366D !important;
+            background-color: #29366D;
             border-radius: 10px !important;
             width: 85%;
         }
 
-        .active::before {
+        .activeone::before {
             content: "";
             position: absolute;
             left: 0;
@@ -243,10 +243,10 @@
             </div>            
             @else
                 <div class="col-2">
-                    <button class="btn btn-primary" onclick="{{ route('login-menu') }}"
-                        style="color: #f7f6fb; background-color: #415090; font-weight: bold; border: 0 !important; height: 85%; width: 100% auto; margin-right: 2px;">Masuk</button>
-                    <button class="btn btn-primary" onclick="window"
-                        style="color: #29366D; background-color: #EEAE18; font-weight: bold; border: 0 !important; height: 85%; width: 100% auto;">Daftar</button>
+                    <a class="btn btn-primary" href="{{ route('login-menu') }}"
+                        style="color: #f7f6fb; background-color: #415090; font-weight: bold; border: 0 !important; height: auto; width: 100% auto; margin-right: 2px;">Masuk</a>
+                    <a class="btn btn-primary" href="{{ route('register-menu') }}"
+                        style="color: #29366D; background-color: #EEAE18; font-weight: bold; border: 0 !important; height: auto; width: 100% auto;">Daftar</a>
                 </div>
             @endif
         </div>
@@ -257,14 +257,14 @@
                 <a href="#" class="nav_logo">
                     <img src="{{ asset('images/logo-header.png') }}" alt="" style="width: auto" height="45" /></a>
                 <div class="nav_list">
-                    <a href="{{ route('home') }}" class="nav_link {{ request()->routeIs('home') ? 'active' : '' }}">
+                    <a href="{{ route('home') }}" class="nav_link {{ request()->routeIs('home') ? 'activeone' : '' }}">
                         <i class='bx bx-home nav_icon'></i>
                         <span class="nav_name">Beranda</span>
                     </a>
-                    <a href="{{ route('tiket-saya') }}" class="nav_link">
+                    <a href="{{ route('tiket-saya') }}" class="nav_link {{ request()->routeIs('tiket-saya') ? 'activeone' : '' }}">
                         <i class='bx bxs-coupon nav_icon'></i> <span class="nav_name"> Tiket Saya</span>
                     </a>
-                    <a href="{{ route('history') }}" class="nav_link">
+                    <a href="{{ route('history') }}" class="nav_link {{ request()->routeIs('history') ? 'activeone' : '' }}">
                         <i class='bx bx-history nav_icon'></i>
                         <span class="nav_name">History</span>
                     </a>

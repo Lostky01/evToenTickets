@@ -34,10 +34,10 @@
   </head>
   <body class="  ">
     <!-- loader Start -->
-    <div id="loading">
+   {{--  <div id="loading">
       <div class="loader simple-loader">
           <div class="loader-body"></div>
-      </div>    </div>
+      </div>    </div> --}}
     <!-- loader END -->
     <aside class="sidebar sidebar-default sidebar-white sidebar-base navs-rounded-all ">
         <div class="sidebar-header d-flex align-items-center justify-content-start">
@@ -98,6 +98,9 @@
                             <span class="item-name">Kelola Event</span>
                         </a>
                     </li>
+                    @php
+                     $unreadTransactionCount = \App\Models\Transactions::where('is_read', 0)->count();
+                    @endphp
                     <li class="nav-item">
                       <a class="nav-link {{ request()->routeIs('status-tiket') ? 'active' : '' }}" aria-current="page" href="{{ route('status-tiket') }}">
                           <i class="icon">
@@ -107,6 +110,11 @@
                               </svg>
                           </i>
                           <span class="item-name">Status Tiket</span>
+                          @if($unreadTransactionCount > 0)
+                          <span class="badge rounded-pill text-bg-danger">{{ $unreadTransactionCount }}</span>
+                          @elseif($unreadTransactionCount > 9)
+                          <span class="badge rounded-pill text-bg-danger">9+</span>
+                          @endif
                       </a>
                   </li>
                     <li class="nav-item">
@@ -170,7 +178,7 @@
                         </ul>
                     </li>
                     @php
-                    $unreadCount = \App\Models\Ticket::where('is_read', 0)->count();
+                    $unreadTicketCount = \App\Models\Ticket::where('is_read', 0)->count();
                     @endphp
                     <li class="nav-item">
                       <a class="nav-link {{ request()->routeIs('transaction-history') ? 'active' : '' }}" aria-current="page"
@@ -187,9 +195,9 @@
                           </svg>
                         </i>
                         <span class="item-name">Transactions List</span>
-                        @if($unreadCount > 0)
-                        <span class="badge rounded-pill text-bg-danger">{{ $unreadCount }}</span>
-                        @elseif($unreadCount > 9)
+                        @if($unreadTicketCount > 0)
+                        <span class="badge rounded-pill text-bg-danger">{{ $unreadTicketCount }}</span>
+                        @elseif($unreadTicketCount > 9)
                         <span class="badge rounded-pill text-bg-danger">9+</span>
                         @endif
                       </a>
@@ -327,10 +335,6 @@
       <!-- Footer Section Start -->
       <footer class="footer">
           <div class="footer-body">
-              <ul class="left-panel list-inline mb-0 p-0">
-                  <li class="list-inline-item"><a href="../dashboard/extra/privacy-policy.html">Privacy Policy</a></li>
-                  <li class="list-inline-item"><a href="../dashboard/extra/terms-of-service.html">Terms of Use</a></li>
-              </ul>
               <div class="right-panel">
                   ©<script>document.write(new Date().getFullYear())</script> | EVToen
               </div>

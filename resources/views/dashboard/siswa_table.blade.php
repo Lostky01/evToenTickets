@@ -13,6 +13,10 @@
                     <div class="card-header d-flex justify-content-between">
                         <div class="header-title">
                             <h4 class="card-title">List Siswa</h4>
+                           
+                        </div>
+                        <div class="">
+                            <a href="{{ route('siswa-create-menu') }}" class="btn btn-primary mb-3">+ Tambah Siswa</a>
                         </div>
                     </div>
                     <div class="card-body">
@@ -39,24 +43,17 @@
                                             <td>{{ $item->password }}</td>
                                             <td>{{ $item->user_type }}</td>
                                             <td>
-                                                <a href="{{ route('edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                                <form action="{{ route('destroy', $item->id) }}" method="POST" style="display:inline;">
+                                                <a href="{{ route('edit-siswa', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                                <form action="{{ route('destroysiswa', $item->id) }}" method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin mau hapus siswa ini?');">Delete</button>
                                                 </form>
                                             </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Event Name</th>
-                                        <th>Price</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </tfoot>
+                               
                             </table>
                         </div>
                     </div>

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -53,6 +54,116 @@ class LandingController extends Controller
         Auth::login($user);
 
         return redirect()->route('home');
+    }
+
+    // Step 1: Tampilkan form input email
+    // Step 1: Tampilkan form email reset
+    public function resetPassShow()
+    {
+        return view('main.email_reset');
+    }
+
+    // Step 2: Kirim OTP ke email
+    public function resetPassOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $user = Users::where('email', $request->email)->first();
+
+        // Generate OTP 4 digit
+        $otp = rand(1000, 9999);
+
+        // Simpan OTP di session
+        session()->put('reset_email', $user->email);
+        session()->put('reset_otp', $otp);
+
+        // Kirim email OTP
+        Mail::raw("Kode OTP reset password Anda adalah: $otp", function ($message) use ($user) {
+            $message->to($user->email)
+                ->subject('Kode OTP Reset Password');
+        });
+
+        // Redirect ke halaman OTP dengan email
+        return view('main.otp_password')->with('email', $user->email);
+    }
+
+    // Step 3: Tampilkan halaman OTP
+    public function verifyOtpShow()
+    {
+        if (!session()->has('reset_email')) {
+            return redirect()->route('password.reset.show')->withErrors(['error' => 'Silakan masukkan email terlebih dahulu.']);
+        }
+
+        return view('main.otp_password', ['email' => session()->get('reset_email')]);
+    }
+
+    // Step 4: Verifikasi OTP
+    public function verifyOtpReset(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|array|min:4',
+        ]);
+
+        $inputOtp = implode("", $request->otp);
+        $sessionOtp = session()->get('reset_otp');
+
+        if (!$sessionOtp) {
+            return back()->withErrors(['otp' => 'OTP tidak ditemukan, silakan minta ulang.']);
+        }
+
+        if ($inputOtp == $sessionOtp) {
+            // Set flag OTP berhasil diverifikasi
+            session()->put('otp_verified', true);
+            session()->put('reset_email', session()->get('reset_email'));
+
+            return redirect()->route('password.reset.new');
+        } else {
+            return back()->withErrors(['otp' => 'Kode OTP salah, coba lagi.']);
+        }
+    }
+
+    // Step 5: Tampilkan form reset password
+    public function resetPasswordShow()
+    {
+        if (!session()->get('otp_verified')) {
+            return redirect()->route('password.reset.show')->withErrors(['error' => 'Silakan verifikasi OTP terlebih dahulu.']);
+        }
+
+        return view('main.reset_password');
+    }
+
+    // Step 6: Update Password
+    public function resetPassword(Request $request)
+    {
+        if (!session()->get('otp_verified')) {
+            return redirect()->route('password.reset.show')->withErrors(['error' => 'Silakan verifikasi OTP terlebih dahulu.']);
+        }
+
+        $request->validate([
+            'password' => 'required|min:6',
+        ]);
+
+        // Ambil email dari session
+        $email = session()->get('reset_email');
+        if (!$email) {
+            return redirect()->route('password.reset.show')->withErrors(['error' => 'Session expired, ulangi proses reset password.']);
+        }
+
+        $user = Users::where('email', $email)->first();
+        if (!$user) {
+            return redirect()->route('password.reset.show')->withErrors(['error' => 'User tidak ditemukan.']);
+        }
+
+        // Update password
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Hapus session
+        session()->forget(['reset_email', 'reset_otp', 'otp_verified']);
+
+        return redirect()->route('login-menu')->with('success', 'Password berhasil direset! Silakan login.');
     }
 
     public function loginAdminShow()

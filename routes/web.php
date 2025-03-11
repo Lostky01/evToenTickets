@@ -23,6 +23,9 @@ Route::get('/event-manage',[EventController::class, 'index'])->name('index');
 Route::get('/siswa-table',[EventController::class, 'user_table'])->name('siswa-table');
 Route::get('/siswa-create-menu',[EventController::class, 'CreateSiswaMenu'])->name('siswa-create-menu');
 Route::post('/siswa/create', [EventController::class, 'createSiswa'])->name('create-siswa');
+Route::get('/siswa/edit/{id}', [EventController::class, 'editSiswa'])->name('edit-siswa');
+Route::put('/siswa/update/{id}', [EventController::class, 'updateSiswa'])->name('update-siswa');
+Route::delete('/siswa/delete/{id}', [EventController::class, 'deleteSiswa'])->name('destroysiswa');
 Route::get('/user-table',[EventController::class, 'user_external_table'])->name('user-external-table');
 Route::get('/create-event',[EventController::class, 'create'])->name('create');
 Route::post('/events/store', [EventController::class, 'store'])->name('store');
@@ -56,7 +59,11 @@ Route::post('/checkout/{id}', [LandingController::class, 'checkout'])->name('che
 Route::get('/ticket/success/{$id}', [LandingController::class, 'showTicket'])->name('ticket-success');
 Route::post('/logout', [LandingController::class, 'logout'])->name('logout');
 Route::get('/my-tickets', [LandingController::class, 'showTickets'])->name('tiket-saya');
-
+Route::get('/reset-password', [LandingController::class, 'resetPassShow'])->name('password.reset.show');
+Route::post('/reset-password/send-otp', [LandingController::class, 'resetPassOtp'])->name('password.reset.otp');
+Route::post('/reset-password/verify', [LandingController::class, 'verifyOtpReset'])->name('otp.verifyreset');
+Route::get('/reset-password/new', [LandingController::class, 'resetPasswordShow'])->name('password.reset.new'); // ini buat ke halaman reset password
+Route::post('/reset-password/update', [LandingController::class, 'resetPassword'])->name('password.update');
 
 Route::get('/experimental', function () {
     return view('main.experiment');
