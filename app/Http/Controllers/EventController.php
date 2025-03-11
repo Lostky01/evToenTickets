@@ -18,11 +18,11 @@ class EventController extends Controller
     public function mainShow()
     {
         $event = Event::orderBy('created_at', 'desc')->get();
-        if (auth('admin')->check()) { // Cek apakah admin
+        if (auth('admin')->check()) { 
             return view('dashboard.main', compact('event'));
-        } elseif (auth()->check()) { // Kalau user biasa
+        } elseif (auth()->check()) { 
             return redirect()->route('home')->with('error', 'Akses ditolak!');
-        } else { // Kalau belum login
+        } else { 
             return redirect()->route('login-admin-menu')->with('error', 'Anda Belum Login!');
         }
 
@@ -30,11 +30,11 @@ class EventController extends Controller
     public function index()
     {
         $event = Event::orderBy('created_at', 'desc')->get();
-        if (auth('admin')->check()) { // Cek apakah admin
+        if (auth('admin')->check()) { 
             return view('dashboard.index', compact('event'));
-        } elseif (auth()->check()) { // Kalau user biasa
+        } elseif (auth()->check()) { 
             return redirect('/home')->with('error', 'Akses ditolak!');
-        } else { // Kalau belum login
+        } else { 
             return redirect()->route('login-admin-menu')->with('error', 'Anda Belum Login!');
         }
 
@@ -43,11 +43,11 @@ class EventController extends Controller
     public function user_table()
     {
         $siswa = Users::where('user_type', 'Siswa')->get();
-        if (auth('admin')->check()) { // Cek apakah admin
+        if (auth('admin')->check()) { 
             return view('dashboard.siswa_table', compact('siswa'));
-        } elseif (auth()->check()) { // Kalau user biasa
+        } elseif (auth()->check()) { 
             return redirect('/home')->with('error', 'Akses ditolak!');
-        } else { // Kalau belum login
+        } else { 
             return redirect()->route('login-admin-menu')->with('error', 'Anda Belum Login!');
         }
     }
@@ -126,22 +126,22 @@ class EventController extends Controller
     public function user_external_table()
     {
         $user = Users::where('user_type', 'External')->get();
-        if (auth('admin')->check()) { // Cek apakah admin
+        if (auth('admin')->check()) { 
             return view('dashboard.user_external_table', compact('user'));
-        } elseif (auth()->check()) { // Kalau user biasa
+        } elseif (auth()->check()) {
             return redirect('/home')->with('error', 'Akses ditolak!');
-        } else { // Kalau belum login
+        } else {
             return redirect()->route('login-admin-menu')->with('error', 'Anda Belum Login!');
         }
     }
 
     public function create()
     {
-        if (auth('admin')->check()) { // Cek apakah admin
+        if (auth('admin')->check()) { 
             return view('dashboard.add_event');
-        } elseif (auth()->check()) { // Kalau user biasa
+        } elseif (auth()->check()) { 
             return redirect('/home')->with('error', 'Akses ditolak!');
-        } else { // Kalau belum login
+        } else { 
             return redirect()->route('login-admin-menu')->with('error', 'Anda Belum Login!');
         }
     }
@@ -186,11 +186,11 @@ class EventController extends Controller
     public function edit($id)
     {
         $data = Event::findOrFail($id);
-        if (auth('admin')->check()) { // Cek apakah admin
+        if (auth('admin')->check()) { 
             return view('dashboard.edit_event', compact('data'));
-        } elseif (auth()->check()) { // Kalau user biasa
+        } elseif (auth()->check()) { 
             return redirect('/home')->with('error', 'Akses ditolak!');
-        } else { // Kalau belum login
+        } else { 
             return redirect()->route('login-admin-menu')->with('error', 'Anda Belum Login!');
         }
     }
@@ -300,7 +300,7 @@ class EventController extends Controller
 
         $today = date('Y-m-d');
 
-        // **Cek apakah tiket ini milik admin atau user biasa**
+        
         $isAdminTicket = !is_null($ticket->admin_id);
 
         if (!$isAdminTicket) {
@@ -312,7 +312,6 @@ class EventController extends Controller
             }
         }
 
-        // **Cek apakah tiket sudah digunakan**
         if ($ticket->is_verified == 1) {
             return response()->json(['message' => 'Tiket sudah digunakan'], 400);
         }
@@ -373,7 +372,6 @@ class EventController extends Controller
     {
         $transaction = Transactions::findOrFail($id);
 
-        // Generate QR Code untuk tiket
         $ticket = new Ticket();
         $ticket->event_id = $transaction->event_id;
         $ticket->user_id = $transaction->user_id;
@@ -390,13 +388,13 @@ class EventController extends Controller
 
         QrCode::format('png')
             ->size(500)
-            ->errorCorrection('M') // Bisa diganti 'Q' kalau masih susah ke-scan
+            ->errorCorrection('M') 
             ->margin(2)
             ->generate($ticket->ticket_code, public_path($qrPath));
 
         $ticket->save();
 
-        // Update status transaksi menjadi dikonfirmasi
+       
         $transaction->is_confirmed = 1;
         $transaction->save();
 
@@ -407,9 +405,9 @@ class EventController extends Controller
     {
         $transaction = Transactions::findOrFail($id);
 
-        // Hapus transaksi jika belum dikonfirmasi
+        
         if ($transaction->is_confirmed == 0) {
-            $transaction->update(['is_confirmed' => -1]); // Set status ke Ditolak
+            $transaction->update(['is_confirmed' => -1]); 
             return redirect()->back()->with('success', 'Transaksi berhasil ditolak.');
         }
 

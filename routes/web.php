@@ -4,8 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Ticket;
+use Illuminate\Http\Request;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LandingController;
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -64,7 +67,11 @@ Route::post('/reset-password/send-otp', [LandingController::class, 'resetPassOtp
 Route::post('/reset-password/verify', [LandingController::class, 'verifyOtpReset'])->name('otp.verifyreset');
 Route::get('/reset-password/new', [LandingController::class, 'resetPasswordShow'])->name('password.reset.new'); // ini buat ke halaman reset password
 Route::post('/reset-password/update', [LandingController::class, 'resetPassword'])->name('password.update');
+Route::get('/my-tickets/{id}', [LandingController::class, 'ticketDetail'])->name('ticket-detail');
+Route::get('/my-tickets/pdf/{id}', [LandingController::class, 'ticketPDF'])->name('ticket-detail-pdf');
 
 Route::get('/experimental', function () {
     return view('main.experiment');
 });
+
+Route::get('/download-ticket/{id}', [LandingController::class, 'downloadTicket'])->name('download.ticket');

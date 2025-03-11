@@ -80,7 +80,7 @@
                                         </div>
 
                                         <!-- Tombol Lihat E-Tiket -->
-                                        <a href="#" class="btn btn-primary mt-3"
+                                        <a href="{{ route('ticket-detail', $ticket->id) }}" class="btn btn-primary mt-3"
                                             style="background-color: #273A8B; border-radius: 8px; padding: 8px 15px; border: 0 !important;">
                                             Lihat E-Tiket
                                         </a>
